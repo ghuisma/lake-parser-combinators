@@ -1,4 +1,4 @@
--- module V4.TrivialLakeParser ( program ) where
+module V4.TrivialLakeParser ( program ) where
 
 import V4.Parser.Prim
 import V4.Parser.Lake
