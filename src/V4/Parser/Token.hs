@@ -86,7 +86,7 @@ makeTokenLakeParser languageDef
     -- Identifiers
     -----------------------------------------------------------
     identifier :: LakeParser String
-    identifier = lexeme $ do
+    identifier = lexeme $ localAccAltFlag False $ do
         x <- identStart languageDef
         xs <- many (identLetter languageDef)
         return (x:xs)
@@ -120,26 +120,26 @@ makeTokenLakeParser languageDef
     -----------------------------------------------------------
     spaces :: LakeParser ()
     spaces = do
-        _ <- some (sat isSpace)
+        some (sat isSpace)
         return ()
         where isSpace x = (x == ' ') || (x == '\n') || (x == '\t')
 
     lineComment :: LakeParser ()
     lineComment = do
-        _ <- symbol (commentLine languageDef)
-        _ <- many (sat (/= '\n'))
+        symbol (commentLine languageDef)
+        many (sat (/= '\n'))
         return ()
 
     multiLineComment :: LakeParser ()
     multiLineComment = do
-        _ <- symbol $ commentStart languageDef
-        _ <- many $ notFollowedBy (symbol (commentEnd languageDef)) *> item
-        _ <- symbol $ commentEnd languageDef
+        symbol $ commentStart languageDef
+        many $ notFollowedBy (symbol (commentEnd languageDef)) *> item
+        symbol $ commentEnd languageDef
         return ()
 
     whiteSpace :: LakeParser ()
-    whiteSpace = do
-        _ <- many (spaces <|> lineComment <|> multiLineComment)
+    whiteSpace = localAccAltFlag False $ do
+        many (spaces <|> lineComment <|> multiLineComment)
         return ()
 
     lexeme :: LakeParser a -> LakeParser a

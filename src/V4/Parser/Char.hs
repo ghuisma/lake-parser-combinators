@@ -14,8 +14,19 @@ import V4.Parser.Prim
 -- satisfies the predicate, and fails otherwise
 sat :: (Char -> Bool) -> LakeParser Char
 sat p = do
-    x <- item
-    if p x then return x else empty
+    accAltFlag <- askAccAltFlag
+    x <- item    
+    if accAltFlag
+        then do
+            if p x
+                then do
+                    tellAlt x -- found potential alt symbol
+                    return x
+                else do
+                    sat p 
+        else if p x
+            then return x
+            else empty
 
 ----------------------------------------------------------------------------------
 -- Character Parsers

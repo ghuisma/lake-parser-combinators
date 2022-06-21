@@ -1,4 +1,4 @@
-module V4.TrivialLakeParser ( program ) where
+-- module V4.TrivialLakeParser ( program ) where
 
 import V4.Parser.Prim
 import V4.Parser.Lake
@@ -31,7 +31,7 @@ funDef = island $ do
     symbol "("
     emptyLake
     symbol ")"
-    bl <-  block
+    bl <- block
     return $ FunDef id bl
 
 funCall :: LakeParser (IslandOrWater Stmt)
@@ -50,4 +50,4 @@ block = island $ do
     return $ Block stmts
 
 stmtLake :: LakeParser [IslandOrWater Stmt]
-stmtLake = lake [funDef, funCall]
+stmtLake = lake (funDef <|> funCall)
