@@ -18,13 +18,12 @@ data IslandOrWater a = Island a
 -- Receives the alternative symbols map
 -- Returns the parser for a lake without any islands in it.
 emptyLake :: LakeParser [IslandOrWater a]
-emptyLake = lake []
+emptyLake = lake empty
 
 -- Receives the parsers for the islands inside the lake and the alternative symbols map.
 -- Returns combined island and water parsers
-lake :: [LakeParser (IslandOrWater a)] -> LakeParser [IslandOrWater a]
-lake rs = do
-    many $ foldl (<|>) empty rs <|> water
+lake :: LakeParser (IslandOrWater a) -> LakeParser [IslandOrWater a]
+lake lp = many $ lp <|> water
 
 -- Receives array of alternative symbols.
 -- Parses any token if the lookahead does not match an alternative symbol, i.e. when `notFollowedBy` succeeds for all alternative symbols.

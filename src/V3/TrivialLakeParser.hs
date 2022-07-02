@@ -50,4 +50,4 @@ block = island '}' $ do
     return $ Block stmts
 
 stmtLake :: LakeParser [IslandOrWater Stmt]
-stmtLake = lake [funDef, funCall]
+stmtLake = lake (funDef <|> funCall)

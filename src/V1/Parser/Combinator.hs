@@ -22,7 +22,7 @@ sepby1 :: Parser a -> Parser b -> Parser [a]
 p `sepby1` sep = do
     x <- p
     xs <- many $ do
-        _ <- sep
+        sep
         p
     return (x:xs)
 
