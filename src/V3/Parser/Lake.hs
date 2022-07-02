@@ -2,7 +2,6 @@ module V3.Parser.Lake
 ( IslandOrWater (..)
 , emptyLake
 , lake
-, water
 , island
 ) where
 
@@ -22,9 +21,10 @@ emptyLake = lake empty
 
 -- Receives the parsers for the islands inside the lake and the alternative symbols map.
 -- Returns combined island and water parsers
-lake :: LakeParser (IslandOrWater a) -> LakeParser [IslandOrWater a]
-lake lp = many $ lp <|> water
-
+lake :: LakeParser (IslandOrWater a) -> LakeParser [a]
+lake lp = fmap (foldr (\islandOrWater acc -> case islandOrWater of Water -> acc
+                                                                   Island x -> x:acc
+                      ) []) (many $ lp <|> water)
 -- Receives array of alternative symbols.
 -- Parses any token if the lookahead does not match an alternative symbol, i.e. when `notFollowedBy` succeeds for all alternative symbols.
 -- Always succeeds if there are not alternative symbols in the AltMap

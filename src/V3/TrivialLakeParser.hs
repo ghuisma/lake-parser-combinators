@@ -14,10 +14,10 @@ data Stmt = FunDef Identifier (IslandOrWater Block)
           | FunCall Identifier
           deriving (Show, Eq)
 
-newtype Block = Block [IslandOrWater Stmt]
+newtype Block = Block [Stmt]
               deriving (Show, Eq)
 
-program :: LakeParser [IslandOrWater Stmt]
+program :: LakeParser [Stmt]
 program = do
     whiteSpace
     program <- stmtLake
@@ -49,5 +49,5 @@ block = island '}' $ do
     symbol "}"
     return $ Block stmts
 
-stmtLake :: LakeParser [IslandOrWater Stmt]
+stmtLake :: LakeParser [Stmt]
 stmtLake = lake (funDef <|> funCall)
